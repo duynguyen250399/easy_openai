@@ -1,25 +1,37 @@
 import 'package:dio/dio.dart';
 import 'package:easy_openai/easy_openai.dart';
-import 'package:easy_openai/src/constants/constants.dart';
-import 'package:easy_openai/src/openai.dart';
-import 'package:easy_openai/src/utils/dio.dart';
 
 abstract class BaseApi {
-  late final Dio client;
+  Dio get _client => OpenAI.client;
+  bool get initialized => OpenAI.initialized;
 
-  BaseApi() {
-    if (!isInitialized) {
+  Future<Response<dynamic>> httpGet(
+    String path, {
+    Map<String, dynamic>? queryParams,
+  }) {
+    if (!initialized) {
       throw UnInitializedException();
     }
 
-    if (apiKey == null || apiKey!.isEmpty) {
-      throw InvalidAPIKeyException();
+    return _client.get(
+      path,
+      queryParameters: queryParams,
+    );
+  }
+
+  Future<Response<dynamic>> httpPost(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Object? data,
+  }) {
+    if (!initialized) {
+      throw UnInitializedException();
     }
 
-    client = createClient(
-      baseUrl: $constants.openAiBaseUrl,
-      apiKey: apiKey!,
-      organizationId: organizationId,
+    return _client.post(
+      path,
+      queryParameters: queryParams,
+      data: data,
     );
   }
 }

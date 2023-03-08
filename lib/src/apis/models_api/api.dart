@@ -6,10 +6,12 @@ export 'models/ai_model.dart';
 export 'models/ai_model_permission.dart';
 
 class ModelsApi extends BaseApi {
+  ModelsApi() : super();
+
   Future<List<AIModel>> all({
     int version = 1,
   }) async {
-    final response = await client.get('/$version/models');
+    final response = await httpGet('/$version/models');
 
     final list =
         response.data['data'] is List ? response.data['data'] as List : [];
@@ -21,7 +23,7 @@ class ModelsApi extends BaseApi {
     int version = 1,
     required String id,
   }) async {
-    final response = await client.get('/$version/models/$id');
+    final response = await httpGet('/$version/models/$id');
 
     final json = response.data is Map
         ? response.data as Map<String, dynamic>
