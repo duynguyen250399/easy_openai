@@ -1,7 +1,5 @@
 library easy_openai;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/openai.dart' show OpenAI;
+export 'src/exceptions/exceptions.dart';
+export 'src/apis/models_api/api.dart';
