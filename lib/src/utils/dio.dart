@@ -2,14 +2,15 @@ import 'package:dio/dio.dart';
 
 Dio createClient({
   required String baseUrl,
-  required String apiKey,
+  required String secretApiKey,
+  required int version,
   String? organizationId,
 }) {
   final dio = Dio(
     BaseOptions(
-      baseUrl: baseUrl,
+      baseUrl: '$baseUrl/v$version',
       headers: {
-        'Authorization': 'Bearer $apiKey',
+        'Authorization': 'Bearer $secretApiKey',
         if (organizationId != null) 'OpenAI-Organization': organizationId,
       },
     ),

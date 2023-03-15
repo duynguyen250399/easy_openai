@@ -1,4 +1,4 @@
-import 'package:easy_openai/src/apis/models_api/models/ai_model_permission.dart';
+import 'package:easy_openai/src/models/model_api/ai_model_permission.dart';
 
 class AIModel {
   AIModel({

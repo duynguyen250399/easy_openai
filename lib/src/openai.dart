@@ -1,24 +1,53 @@
-import 'package:dio/dio.dart';
-import 'package:easy_openai/src/apis/models_api/api.dart';
-import 'package:easy_openai/src/constants/constants.dart';
-import 'package:easy_openai/src/utils/dio.dart';
+import 'package:easy_openai/src/apis/api.dart';
+import 'package:easy_openai/src/apis/model_api.dart';
+import 'package:easy_openai/src/exceptions/exceptions.dart';
 
 class OpenAI {
-  static bool initialized = false;
-  static late Dio client;
+  String _secretApiKey;
+  String? _organizationId;
+  int _version;
 
-  static void init({
-    required String apiKey,
+  OpenAI({
+    required String secretApiKey,
     String? organizationId,
-  }) {
-    client = createClient(
-      baseUrl: $constants.openAiBaseUrl,
-      apiKey: apiKey,
-      organizationId: organizationId,
-    );
+    int version = 1,
+  })  : _secretApiKey = secretApiKey,
+        _organizationId = organizationId,
+        _version = version;
 
-    initialized = true;
+  set secretApiKey(String value) {
+    assert(
+        value.isNotEmpty, '[$runtimeType] [secretApiKey] must not be empty.');
+    _secretApiKey = value;
   }
 
-  static ModelsApi get models => ModelsApi();
+  set organizationId(String? value) {
+    assert(
+      value == null || value.isNotEmpty,
+      '[$runtimeType] [organizationId] must be null (optional) or not be empty.',
+    );
+    _organizationId = value;
+  }
+
+  set version(int value) {
+    assert(value >= 1, '[$runtimeType] [version] must be >= 1');
+    _version = value;
+  }
+
+  ModelAPI get modelAPI => _create();
+
+  T _create<T extends OpenAIAPI>() {
+    switch (T) {
+      case ModelAPI:
+        return ModelAPI(
+          secretApiKey: _secretApiKey,
+          organizationId: _organizationId,
+          version: _version,
+        ) as T;
+      default:
+        throw InvalidTypeException(
+          'Failed to create OpenAI instance due to invalid generic type <T>',
+        );
+    }
+  }
 }

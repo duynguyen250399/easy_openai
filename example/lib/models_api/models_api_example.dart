@@ -1,4 +1,5 @@
 import 'package:easy_openai/easy_openai.dart';
+import 'package:example/main.dart';
 import 'package:flutter/material.dart';
 
 class ModelsApiExample extends StatefulWidget {
@@ -15,7 +16,7 @@ class _ModelsApiExampleState extends State<ModelsApiExample> {
   void initState() {
     super.initState();
 
-    _getAllModels = OpenAI.models.all();
+    _getAllModels = openAI.modelAPI.all();
   }
 
   @override
