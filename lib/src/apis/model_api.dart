@@ -2,12 +2,6 @@ import 'package:easy_openai/src/apis/api.dart';
 import 'package:easy_openai/src/models/model_api/ai_model.dart';
 
 class ModelAPI extends OpenAIAPI {
-  ModelAPI({
-    required super.secretApiKey,
-    required super.organizationId,
-    required super.version,
-  });
-
   Future<List<AIModel>> all() async {
     final response = await get('/models');
 

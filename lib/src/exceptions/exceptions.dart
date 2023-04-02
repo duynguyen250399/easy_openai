@@ -10,3 +10,9 @@ class InvalidAPIKeyException extends OpenAIException {
 class InvalidTypeException extends OpenAIException {
   InvalidTypeException(super.message);
 }
+
+class NotInitializedException extends OpenAIException {
+  NotInitializedException()
+      : super(
+            'OpenAI has not been initialized, please call `OpenAI.initialize() first.`');
+}

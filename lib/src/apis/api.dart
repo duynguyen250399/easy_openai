@@ -1,26 +1,29 @@
 import 'package:dio/dio.dart';
 import 'package:easy_openai/src/constants/constants.dart';
+import 'package:easy_openai/src/openai.dart';
 import 'package:easy_openai/src/utils/dio.dart';
 
 export 'model_api.dart';
 
-abstract class OpenAIAPI {
-  final String secretApiKey;
-  final String? organizationId;
-  final int version;
-
-  OpenAIAPI({
-    required this.secretApiKey,
-    required this.organizationId,
-    required this.version,
-  }) : _client = createClient(
-          baseUrl: $constants.openAiBaseUrl,
-          secretApiKey: secretApiKey,
-          version: version,
-        );
-
+class OpenAIAPI {
   late final Dio _client;
   Dio get client => _client;
+
+  OpenAIAPI() {
+    _client = createClient(
+      baseUrl: $constants.openAiBaseUrl,
+      secretApiKey: secretApiKey,
+      version: apiVersion,
+    );
+  }
+
+  void setVersion(int version) {
+    _client = createClient(
+      baseUrl: $constants.openAiBaseUrl,
+      secretApiKey: secretApiKey,
+      version: version,
+    );
+  }
 
   Future<Response<dynamic>> get(
     String path, {

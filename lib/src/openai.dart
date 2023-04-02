@@ -1,53 +1,55 @@
-import 'package:easy_openai/src/apis/api.dart';
-import 'package:easy_openai/src/apis/model_api.dart';
-import 'package:easy_openai/src/exceptions/exceptions.dart';
+import 'package:easy_openai/easy_openai.dart';
 
 class OpenAI {
-  String _secretApiKey;
-  String? _organizationId;
-  int _version;
+  static String _secretApiKey = '';
+  static String? _organizationId;
+  static int _version = 1;
+  static bool _initialized = false;
 
-  OpenAI({
+  OpenAI._();
+
+  static void initialize({
     required String secretApiKey,
     String? organizationId,
     int version = 1,
-  })  : _secretApiKey = secretApiKey,
-        _organizationId = organizationId,
-        _version = version;
+  }) {
+    _secretApiKey = secretApiKey;
+    _organizationId = organizationId;
+    _version = version;
+    _initialized = true;
+  }
 
-  set secretApiKey(String value) {
-    assert(
-        value.isNotEmpty, '[$runtimeType] [secretApiKey] must not be empty.');
+  bool get initialized => _initialized;
+
+  static void setSecretApiKey(String value) {
+    assert(value.isNotEmpty, '[secretApiKey] must not be empty.');
     _secretApiKey = value;
   }
 
-  set organizationId(String? value) {
+  static void setOrganizationId(String? value) {
     assert(
       value == null || value.isNotEmpty,
-      '[$runtimeType] [organizationId] must be null (optional) or not be empty.',
+      '[organizationId] must be null (optional) or not be empty.',
     );
     _organizationId = value;
   }
 
-  set version(int value) {
-    assert(value >= 1, '[$runtimeType] [version] must be >= 1');
+  static void setVersion(int value) {
+    assert(value >= 1, '[version] must be >= 1');
     _version = value;
   }
 
-  ModelAPI get modelAPI => _create();
+  static ModelAPI get modelAPI => _createApi();
 
-  T _create<T extends OpenAIAPI>() {
-    switch (T) {
-      case ModelAPI:
-        return ModelAPI(
-          secretApiKey: _secretApiKey,
-          organizationId: _organizationId,
-          version: _version,
-        ) as T;
-      default:
-        throw InvalidTypeException(
-          'Failed to create OpenAI instance due to invalid generic type <T>',
-        );
+  static T _createApi<T extends OpenAIAPI>() {
+    if (!_initialized) {
+      throw NotInitializedException();
     }
+
+    return OpenAIAPI() as T;
   }
 }
+
+final secretApiKey = OpenAI._secretApiKey;
+final organizationId = OpenAI._organizationId;
+final apiVersion = OpenAI._version;
